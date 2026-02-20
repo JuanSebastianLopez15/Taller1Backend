@@ -3,17 +3,25 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+// ============================================
+// Rutas para el CRUD de Cursos
+// ============================================
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// GET - Consultar todos los Cusosos
+Route::get('/cursos', [CursoAcademicoController::class, 'listadoCursos']);
+
+// GET - Consultar un Cursos específico por ID
+Route::get('/cursos/{id}', [CursoAcademicoController::class, 'consultarCurso']);
+
+// POST - Insertar un nuevo Curso
+Route::post('/cursos', [CursoAcademicoController::class, 'insertarCurso']);
+
+// PUT - Actualizar un curso completo
+Route::put('/curso/{id}', [CursoAcademicoController::class, 'actualizarCurso']);
+
+
+// DELETE - Eliminar un Cursos
+Route::delete('/estudiantes/{id}', [CursoAcademicoController::class, 'eliminarCurso']);
+
+
+//Route::apiResource('cursos', CursoController::class);
