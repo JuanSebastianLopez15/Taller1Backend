@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class CursoAcademicoController extends Controller
 {
     // Ruta del archivo JSON para almacenar los estudiantes
-    private $archivoEstudiantes = 'estudiantes.json';
+    private $archivoCursos = 'cursos.json';
 
     /**
      * Datos iniciales de estudiantes
@@ -18,52 +18,55 @@ class CursoAcademicoController extends Controller
         return [
             [
                 'id' => 1,
-                'nombre' => 'Juan Perez',
-                'edad' => 20,
-                'carrera' => 'Ingeniería en Sistemas'
+                'nombre' => 'primeros auxilios',
+                'codigo' => 1001,
+                'creditos' => '2'
+                'docente' => 'Harold M'
             ],
             [
                 'id' => 2,
-                'nombre' => 'Maria Garcia',
-                'edad' => 22,
-                'carrera' => 'Administración'
+                'nombre' => 'Backend',
+                'codigo' => 1002,
+                'creditos' => '3'
+                'docente' => 'Harold Morales'
             ],
             [
                 'id' => 3,
-                'nombre' => 'Carlos Lopez',
-                'edad' => 21,
-                'carrera' => 'Contaduría'
+                'nombre' => 'Logica de programacion',
+                'codigo' => 1003,
+                'creditos' => '3'
+                'docente' => 'Simon'
             ]
         ];
     }
 
     /**
-     * Método auxiliar para obtener el array de estudiantes desde el archivo
+     * Método auxiliar para obtener el array de cursos desde el archivo
      */
-    private function getEstudiantes(){
+    private function getCursos(){
         // Si el archivo no existe, crear con datos iniciales
-        if (!Storage::exists($this->archivoEstudiantes)) {
-            $this->guardarEstudiantes($this->getDatosIniciales());
+        if (!Storage::exists($this->archivoCursos)) {
+            $this->guardarCursos($this->getDatosIniciales());
             return $this->getDatosIniciales();
         }
 
         // Leer el archivo JSON
-        $contenido = Storage::get($this->archivoEstudiantes);
-        $estudiantes = json_decode($contenido, true);
+        $contenido = Storage::get($this->archivoCursos);
+        $cursos = json_decode($contenido, true);
 
         // Si hay error al decodificar, retornar datos iniciales
-        if ($estudiantes === null) {
+        if ($cursos === null) {
             return $this->getDatosIniciales();
         }
 
-        return $estudiantes;
+        return $cursos;
     }
 
     /**
      * Método auxiliar para guardar el array de estudiantes en el archivo
      */
-    private function guardarEstudiantes($estudiantes){
-        Storage::put($this->archivoEstudiantes, json_encode($estudiantes, JSON_PRETTY_PRINT));
+    private function guardarCursos($cursos){
+        Storage::put($this->archivoCursos, json_encode($cursos, JSON_PRETTY_PRINT));
     }
 
     /**
@@ -71,10 +74,10 @@ class CursoAcademicoController extends Controller
      * Método: GET
      * URL: /api/estudiantes
      */
-    public function consultarEstudiantes(){
+    public function consultarCursos(){
         return response()->json([
-            "message" => "Lista de estudiantes obtenida exitosamente",
-            "data" => $this->getEstudiantes()
+            "message" => "Lista de Cursos obtenida exitosamente",
+            "data" => $this->getCursos()
         ], 200);
     }
 
@@ -83,19 +86,19 @@ class CursoAcademicoController extends Controller
      * Método: GET
      * URL: /api/estudiantes/{id}
      */
-    public function consultarEstudiante($id){
-        $estudiantes = $this->getEstudiantes();
-        $estudiante = collect($estudiantes)->firstWhere('id', $id);
+    public function consultarCurso($id){
+        $cursos = $this->getCursos();
+        $curso = collect($Cursos)->firstWhere('id', $id);
 
-        if (!$estudiante) {
+        if (!$cursos) {
             return response()->json([
-                "message" => "Estudiante no encontrado"
+                "message" => "Curso no encontrado"
             ], 404);
         }
 
         return response()->json([
-            "message" => "Estudiante encontrado exitosamente",
-            "data" => $estudiante
+            "message" => "Curso encontrado exitosamente",
+            "data" => $curso
         ], 200);
     }
 
@@ -105,34 +108,37 @@ class CursoAcademicoController extends Controller
      * URL: /api/estudiantes
      * Body (JSON): { "nombre": "Nombre", "edad": 20, "carrera": "Carrera" }
      */
-    public function insertarEstudiante(Request $request){
+    public function insertarCurso(Request $request){
         // Validar los datos recibidos
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'edad' => 'required|integer|min:1',
-            'carrera' => 'required|string|max:255'
+            'codigo' => 'required|integer|min:1',
+            'creditos' => 'required|string|max:255'
+            'docente' => 'required|string|max:255'
         ]);
 
         // Obtener estudiantes actuales
-        $estudiantes = $this->getEstudiantes();
+        $cursos = $this->getCursos();
 
         // Crear el nuevo estudiante
-        $nuevoEstudiante = [
-            'id' => count($estudiantes) > 0 ? max(array_column($estudiantes, 'id')) + 1 : 1,
+        $nuevoCurso = [
+            'id' => count($cursos) > 0 ? max(array_column($cursos, 'id')) + 1 : 1,
             'nombre' => $request->nombre,
-            'edad' => $request->edad,
-            'carrera' => $request->carrera
+            'codigo' => $request->codigo,
+            'creditos' => $request->creditos,
+            'docente' => $request->docente
+
         ];
 
         // Agregar al array
-        $estudiantes[] = $nuevoEstudiante;
+        $cursos[] = $nuevoCurso;
 
         // Guardar en el archivo
-        $this->guardarEstudiantes($estudiantes);
+        $this->guardarCursos($Cursos);
 
         return response()->json([
-            "message" => "Estudiante insertado exitosamente",
-            "data" => $nuevoEstudiante
+            "message" => "Curso insertado exitosamente",
+            "data" => $nuevoCurso
         ], 201);
     }
 
@@ -142,7 +148,7 @@ class CursoAcademicoController extends Controller
      * URL: /api/estudiantes/{id}
      * Body (JSON): { "nombre": "Nombre", "edad": 20, "carrera": "Carrera" }
      */
-    public function actualizarEstudiante(Request $request, $id){
+    public function actualizarCurso(Request $request, $id){
         // Validar los datos recibidos
         $request->validate([
             'nombre' => 'required|string|max:255',
@@ -151,21 +157,21 @@ class CursoAcademicoController extends Controller
         ]);
 
         // Obtener estudiantes actuales
-        $estudiantes = $this->getEstudiantes();
+        $cursos = $this->getCursos();
 
         // Buscar el estudiante
-        $indice = collect($estudiantes)->search(function($item) use ($id) {
+        $indice = collect($cursos)->search(function($item) use ($id) {
             return $item['id'] == $id;
         });
 
         if ($indice === false) {
             return response()->json([
-                "message" => "Estudiante no encontrado"
+                "message" => "Curso no encontrado"
             ], 404);
         }
 
         // Actualizar el estudiante
-        $estudiantes[$indice] = [
+        $cursos[$indice] = [
             'id' => (int)$id,
             'nombre' => $request->nombre,
             'edad' => $request->edad,
@@ -173,11 +179,11 @@ class CursoAcademicoController extends Controller
         ];
 
         // Guardar en el archivo
-        $this->guardarEstudiantes($estudiantes);
+        $this->guardarCursos($cursos);
 
         return response()->json([
-            "message" => "Estudiante actualizado exitosamente",
-            "data" => $estudiantes[$indice]
+            "message" => "Curso actualizado exitosamente",
+            "data" => $cursos[$indice]
         ], 200);
     }
 
@@ -187,7 +193,7 @@ class CursoAcademicoController extends Controller
      * URL: /api/estudiantes/{id}
      * Body (JSON): { "nombre": "Solo actualizar nombre" } o { "edad": 25 } o cualquier combinación
      */
-    public function actualizarEstudianteParcial(Request $request, $id){
+    public function actualizarCursoParcial(Request $request, $id){
         // Validar los datos recibidos (todos son opcionales en PATCH)
         $request->validate([
             'nombre' => 'sometimes|string|max:255',
@@ -196,38 +202,38 @@ class CursoAcademicoController extends Controller
         ]);
 
         // Obtener estudiantes actuales
-        $estudiantes = $this->getEstudiantes();
+        $cursos = $this->getCursos();
 
         // Buscar el estudiante
-        $indice = collect($estudiantes)->search(function($item) use ($id) {
+        $indice = collect($cursos)->search(function($item) use ($id) {
             return $item['id'] == $id;
         });
 
         if ($indice === false) {
             return response()->json([
-                "message" => "Estudiante no encontrado"
+                "message" => "Curso no encontrado"
             ], 404);
         }
 
         // Actualizar solo los campos que se enviaron
         if ($request->has('nombre')) {
-            $estudiantes[$indice]['nombre'] = $request->nombre;
+            $Cursos[$indice]['nombre'] = $request->nombre;
         }
 
         if ($request->has('edad')) {
-            $estudiantes[$indice]['edad'] = $request->edad;
+            $cursos[$indice]['edad'] = $request->edad;
         }
 
         if ($request->has('carrera')) {
-            $estudiantes[$indice]['carrera'] = $request->carrera;
+            $cursos[$indice]['carrera'] = $request->carrera;
         }
 
         // Guardar en el archivo
-        $this->guardarEstudiantes($estudiantes);
+        $this->guardarCursos($cursos);
 
         return response()->json([
-            "message" => "Estudiante actualizado parcialmente exitosamente",
-            "data" => $estudiantes[$indice]
+            "message" => "Curso actualizado parcialmente exitosamente",
+            "data" => $cursos[$indice]
         ], 200);
     }
 
@@ -236,34 +242,34 @@ class CursoAcademicoController extends Controller
      * Método: DELETE
      * URL: /api/estudiantes/{id}
      */
-    public function eliminarEstudiante($id){
+    public function eliminarCurso($id){
         // Obtener estudiantes actuales
-        $estudiantes = $this->getEstudiantes();
+        $cursos = $this->getCursos();
 
         // Buscar el estudiante
-        $indice = collect($estudiantes)->search(function($item) use ($id) {
+        $indice = collect($cursos)->search(function($item) use ($id) {
             return $item['id'] == $id;
         });
 
         if ($indice === false) {
             return response()->json([
-                "message" => "Estudiante no encontrado"
+                "message" => "Curso no encontrado"
             ], 404);
         }
 
         // Guardar el estudiante antes de eliminarlo
-        $estudianteEliminado = $estudiantes[$indice];
+        $cursoEliminado = $cursos[$indice];
 
         // Eliminar del array
-        unset($estudiantes[$indice]);
-        $estudiantes = array_values($estudiantes); // Reindexar el array
+        unset($cursos[$indice]);
+        $cursos = array_values($cursos); // Reindexar el array
 
         // Guardar en el archivo
-        $this->guardarEstudiantes($estudiantes);
+        $this->guardarCursos($cursos);
 
         return response()->json([
-            "message" => "Estudiante eliminado exitosamente",
-            "data" => $estudianteEliminado
+            "message" => "Curso eliminado exitosamente",
+            "data" => $CursoEliminado
         ], 200);
     }
 }
