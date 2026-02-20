@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\CursoAcademicoController;
 // ============================================
 // Rutas para el CRUD de Cursos
 // ============================================
@@ -25,3 +25,6 @@ Route::delete('/curso/{id}', [CursoAcademicoController::class, 'eliminarCurso'])
 
 
 //Route::apiResource('cursos', CursoController::class);
+
+Route::get('/cursos', 'App\Http\Controllers\CursoAcademicoController@consultarCursos');
+Route::get('/prueba', [\App\Http\Controllers\PruebaController::class, 'index']);

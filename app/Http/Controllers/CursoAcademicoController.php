@@ -88,7 +88,7 @@ class CursoAcademicoController extends Controller
      */
     public function consultarCurso($id){
         $cursos = $this->getCursos();
-        $curso = collect($Cursos)->firstWhere('id', $id);
+        $curso = collect($cursos)->firstWhere('id', $id);
 
         if (!$cursos) {
             return response()->json([
@@ -134,7 +134,7 @@ class CursoAcademicoController extends Controller
         $cursos[] = $nuevoCurso;
 
         // Guardar en el archivo
-        $this->guardarCursos($Cursos);
+        $this->guardarCursos($cursos);
 
         return response()->json([
             "message" => "Curso insertado exitosamente",
@@ -179,7 +179,7 @@ class CursoAcademicoController extends Controller
             'creditos' => $request->creditos,
             'docente' => $request->docente
 
-            
+
         ];
 
         // Guardar en el archivo
@@ -222,7 +222,7 @@ class CursoAcademicoController extends Controller
 
         // Actualizar solo los campos que se enviaron
         if ($request->has('nombre')) {
-            $Cursos[$indice]['nombre'] = $request->nombre;
+            $cursos[$indice]['nombre'] = $request->nombre;
         }
 
         if ($request->has('edad')) {
@@ -274,7 +274,7 @@ class CursoAcademicoController extends Controller
 
         return response()->json([
             "message" => "Curso eliminado exitosamente",
-            "data" => $CursoEliminado
+            "data" => $cursoEliminado
         ], 200);
     }
 }
