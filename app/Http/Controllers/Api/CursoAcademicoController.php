@@ -20,21 +20,21 @@ class CursoAcademicoController extends Controller
                 'id' => 1,
                 'nombre' => 'primeros auxilios',
                 'codigo' => 1001,
-                'creditos' => '2'
+                'creditos' => '2',
                 'docente' => 'Harold M'
             ],
             [
                 'id' => 2,
                 'nombre' => 'Backend',
                 'codigo' => 1002,
-                'creditos' => '3'
+                'creditos' => '3',
                 'docente' => 'Harold Morales'
             ],
             [
                 'id' => 3,
                 'nombre' => 'Logica de programacion',
                 'codigo' => 1003,
-                'creditos' => '3'
+                'creditos' => '3',
                 'docente' => 'Simon'
             ]
         ];
@@ -113,7 +113,7 @@ class CursoAcademicoController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'codigo' => 'required|integer|min:1',
-            'creditos' => 'required|string|max:255'
+            'creditos' => 'required|string|max:255',
             'docente' => 'required|string|max:255'
         ]);
 
@@ -152,8 +152,9 @@ class CursoAcademicoController extends Controller
         // Validar los datos recibidos
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'edad' => 'required|integer|min:1',
-            'carrera' => 'required|string|max:255'
+            'codigo' => 'required|integer|min:1',
+            'creditos' => 'required|string|max:255',
+            'docente' => 'required|string|max:255'
         ]);
 
         // Obtener estudiantes actuales
@@ -174,8 +175,11 @@ class CursoAcademicoController extends Controller
         $cursos[$indice] = [
             'id' => (int)$id,
             'nombre' => $request->nombre,
-            'edad' => $request->edad,
-            'carrera' => $request->carrera
+            'codigo' => $request->codigo,
+            'creditos' => $request->creditos,
+            'docente' => $request->docente
+
+            
         ];
 
         // Guardar en el archivo
@@ -196,9 +200,10 @@ class CursoAcademicoController extends Controller
     public function actualizarCursoParcial(Request $request, $id){
         // Validar los datos recibidos (todos son opcionales en PATCH)
         $request->validate([
-            'nombre' => 'sometimes|string|max:255',
-            'edad' => 'sometimes|integer|min:1',
-            'carrera' => 'sometimes|string|max:255'
+            'nombre' => 'required|string|max:255',
+            'codigo' => 'required|integer|min:1',
+            'creditos' => 'required|string|max:255',
+            'docente' => 'required|string|max:255'
         ]);
 
         // Obtener estudiantes actuales

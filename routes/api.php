@@ -8,20 +8,20 @@ use Illuminate\Support\Facades\Route;
 // ============================================
 
 // GET - Consultar todos los Cusosos
-Route::get('/cursos', [CursoAcademicoController::class, 'listadoCursos']);
+Route::get('/cursos', [CursoAcademicoController::class, 'consultarCursos']); //
 
 // GET - Consultar un Cursos específico por ID
-Route::get('/cursos/{id}', [CursoAcademicoController::class, 'consultarCurso']);
+Route::get('/cursos/{id}', [CursoAcademicoController::class, 'consultarCurso']);//
 
 // POST - Insertar un nuevo Curso
-Route::post('/cursos', [CursoAcademicoController::class, 'insertarCurso']);
+Route::post('/cursos', [CursoAcademicoController::class, 'insertarCurso']);//
 
 // PUT - Actualizar un curso completo
-Route::put('/curso/{id}', [CursoAcademicoController::class, 'actualizarCurso']);
+Route::put('/curso/{id}', [CursoAcademicoController::class, 'actualizarCurso']);//
 
 
 // DELETE - Eliminar un Cursos
-Route::delete('/estudiantes/{id}', [CursoAcademicoController::class, 'eliminarCurso']);
+Route::delete('/curso/{id}', [CursoAcademicoController::class, 'eliminarCurso']);//
 
 
 //Route::apiResource('cursos', CursoController::class);
